@@ -1,0 +1,20 @@
+---
+- name: Creating a database example
+  hosts: redhat
+  ignore_erros: true
+  ignore_unreachable: true
+  become: true
+  become_user: root
+  become_method: su
+  remote_user: root
+  tasks:
+      - name: Installing python module for mysql
+        dnf:
+            name: python2-PyMySQL
+            state: latest
+      - name:
+        mysql_db:
+            login_user: root
+            login_password: 
+            name: trial_db
+

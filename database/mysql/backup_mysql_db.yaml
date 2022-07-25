@@ -1,0 +1,29 @@
+---
+- name: Achiving the database 'chelsea'
+  hosts: redhat
+  remote_user: root
+  become: true
+  become_method: su
+  become_user: root
+  ignore_errors: true
+  ignore_unreachable: true
+  tasks:
+     - name: Creating a backup file
+       ansible.builtin.file:
+          path: /home/reuben/chelsea.sql
+          state: touch
+          group: root
+          mode: '0644'
+          owner: root
+
+     - name: Backup database 'chelsea'
+       mysql_db:
+          name: chelsea
+          state: dump
+          target: /home/reuben/chel.sql
+          login_user: root
+          login_password: 
+          login_host: localhost
+          login_port: 3306
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock

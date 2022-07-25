@@ -1,0 +1,46 @@
+---
+# The playbook contains 3 tasks that  gather facts and execute commands on nodes
+#
+- name: Remote node command execution and registering the output of the commands 
+  hosts: redhat
+  ignore_unreachable: true
+  ignore_errors: true
+  become: true
+  remote_user: root
+  become_user: root
+  become_method: su
+  tasks:
+     # outputs all facts gathered from the node
+     # uses ansible.builtin.debug module
+     # var and msg are mutually exclusive
+     #
+      - name: The debugger 
+        debug:
+           var: ansible_facts
+
+     # excutes a remote command ifconfig
+     # The output of command is registered
+     # notifies the handler, check [handlers]
+     #
+     
+      - name: Executing the ifconfig command
+        command: /usr/sbin/ifconfig
+        register: the_output
+        notify: debugger
+        when: ansible_facts['os_family'] == "RedHat"
+
+      # Reboot all nodes that are os_family 'RedHat'
+      # uses the ansible.builtin.command module
+      # It's just, for illustration, reboot causes lose of connection with the node
+      # Other task may not be executed. Consider running it last
+      #
+      - name: Reboot only RedHat os_family nodes
+        command: /usr/sbin/ifconfig
+        register: the_output
+        notify: debugger
+        when: ansible_facts['os_family'] == "RedHat"
+  handlers:
+     - name: Outputing the iface info
+       debug:
+          msg: "{{ the_output['stdout_lines'] }}"
+       listen: debugger

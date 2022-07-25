@@ -1,0 +1,111 @@
+  
+---
+- iame: package  updates in ubuntu servers
+  hosts: redhat 
+  ignore_errors: yes 
+  ignore_unreachable: yes
+  remote_user: root
+  become: yes
+  become_user: root
+  become_method: su
+  tasks:
+      - name: Create a new database with name 'bobdata'
+        mysql_db:
+          name: bobdata
+          state: present
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+
+      - name: Create new databases with names 'foo' and 'bar'
+        mysql_db:
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+          name:
+            - foo
+            - bar
+          state: present
+          
+
+      # Copy database dump file to remote host and restore it to database 'my_db'
+      - name: Copy database dump file
+        copy:
+          src: dump.sql.bz2
+          dest: /tmp
+
+      - name: Restore database
+        mysql_db:
+          name: my_db
+
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+          state: import
+          target: /tmp/dump.sql.bz2
+
+      - name: Dump multiple databases
+        mysql_db:
+
+          state: dump
+          name: db_1,db_2
+          target: /tmp/dump.sql
+
+      - name: Dump multiple databases
+        mysql_db:
+          state: dump
+          name:
+            - db_1
+            - db_2
+          target: /tmp/dump.sql
+
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+
+      - name: Dump all databases to hostname.sql
+        mysql_db:
+          state: dump
+          name: all
+          target: /tmp/dump.sql
+
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+
+      - name: Import file.sql similar to mysql -u <username> -p <password> < hostname.sql
+        mysql_db:
+          state: import
+          name: all
+          target: /tmp/dump.sql
+
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+
+      - name: Delete database with name 'bobdata'
+        mysql_db:
+          name: bobdata
+          state: absent
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+
+      - name: Make sure there is neither a database with name 'foo', nor one with name 'bar'
+        mysql_db:
+          name:
+            - foo
+            - bar
+          state: absent
+          login_user: root
+          login_password: ""
+          config_file: /etc/my.cnf
+          login_unix_socket: /var/lib/mysql/mysql.sock
+

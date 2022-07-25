@@ -1,0 +1,28 @@
+---
+# The script starts mariadb service, creates the initial database 
+#
+- name: Script to start mariadb service and create first database Ombaso
+  hosts: redhat
+  remote_user: root
+  become: true
+  become_method: su
+  become_user: root
+  ignore_errors: true
+  ignore_unreachable: true
+  tasks:
+      - name: Starting mariadb service
+        service:
+           name: mariadb
+           state: started
+      - name: creating database 'chelsea'
+        mysql_db:
+           name: chelsea
+           login_user: root
+           login_password: 
+           login_host: localhost
+           login_port: 3306
+           config_file: /etc/my.cnf
+           login_unix_socket: /var/lib/mysql/mysql.sock
+
+           state: present
+

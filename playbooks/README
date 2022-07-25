@@ -1,0 +1,24 @@
+      
+      <h1>All you need to know about handlers <h1>
+      * Handlers are only executed once unless regardless how many task notify it unless the mata module is added
+      *   name: Flush handlers
+      *   meta: flush_handlers
+      * The meta: flush_handlers task triggers any handlers that have been notified at that point in the play.
+      *
+      * Once handlers are executed, either automatically after each mentioned section or manually by the flush_handlers meta task,
+      * they can be notified and run again in later sections of the play.
+      *
+      * Handlers are executed  only when all task have completed
+      * Handlers have a one group scope and should have a unique name
+      * Handlers are executed only when the state is changed
+
+      * Handlers are notified from task by the notify keyword.
+      *     notify: nameofhandler
+      *         or 
+
+      *     notify:
+      *       - handler1
+      *       - handler2
+      * Handlers can use the listen keyword to get notified by the tasks. The listen keyword enables group multipe 
+      * handlers together
+

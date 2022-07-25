@@ -1,0 +1,15 @@
+---
+- name: collect all information using passwordless access
+  hosts: redhat
+  ignore_errors: true
+  ignore_unreachable: true
+  remote_user: root
+  become: true
+  become_method: su
+  tasks:
+    - name: collect all possible infomation
+      mysql_info:
+         login_user: root
+         config_file: /etc/my.cnf
+         login_unix_socket: /var/lib/mysql/mysql.sock
+         filter: version 

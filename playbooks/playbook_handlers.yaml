@@ -1,0 +1,20 @@
+---
+- name: Working with ansible handlers
+  hosts: redhat
+  ignore_errors: true
+  ignore_unreachable: true
+  become: true
+  become_user: root
+  become_method: su
+  remote_user: root
+  tasks:
+     - name: Checking if 'Mariadb' is present
+       service:
+          name: mariadb
+          state: started
+       notify:
+          - handler1
+  handlers:
+     - name: handler1
+       debug:
+          msg: "Mariadb start service task exceuted and state is changed"

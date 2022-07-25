@@ -1,0 +1,20 @@
+---
+- name: Learning handler listen keyword
+  remote_user: root
+  become_user: root
+  ignore_unreachable: true
+  become_method: su
+  ignore_errors: true
+  hosts: redhat
+  tasks: 
+     - name: stopping 'mariadb service'
+       service:
+          name: mariadb
+          state: stopped
+       notify:
+          - mariadb_handler
+  handlers:
+      - name: The maraidb handler
+        debug:
+           msg: "The mariadb service stopped successfully"
+        listen: mariadb_handler

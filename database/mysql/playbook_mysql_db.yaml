@@ -1,0 +1,30 @@
+---
+- name: Creating a database example
+  hosts: redhat
+  ignore_errors: true
+  ignore_unreachable: true
+  become: true
+  become_user: root
+  become_method: su
+  remote_user: root
+  tasks:
+      - name: Installing python module for mysql
+        dnf:
+            name: python3-PyMySQL
+            state: present
+      - name: Creating trial database
+        mysql_db:
+            login_user: root
+            login_password: root
+            name: trial_db
+            state: present
+            config_file: /etc/my.cnf.d/mariadb-server.cnf
+            login_unix_socket: /var/lib/mysql/mysqld.sock
+        register:
+            -  messagex
+        notify:
+            - handler_master
+  handlers:
+     - name: handler_master
+       ansible.builtin.debug:
+          msg: "{{messagex.msg}}"
