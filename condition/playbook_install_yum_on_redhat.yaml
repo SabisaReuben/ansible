@@ -1,0 +1,35 @@
+---
+# The script demonistrates how you can use conditions to install packages on
+# only on selected os_family/distos
+#
+- name: using yum to install package on readhat
+  hosts: all
+  ignore_errors: true
+  become: true
+  become_user: root
+  become_method: su
+  ignore_unreachable: true
+  remote_user: root
+  tasks:
+
+  # Using yum package manager to install updates
+  # condition:
+  #    execute if it a redhat os_family
+  #
+      - name: installing 'system updates'
+        yum:
+          name: update
+          state: latest
+        when: ansible_facts['os_family'] == "RedHat"
+        register: output
+        notify: update_handler
+
+  # outputs the output of the installing 'system updates' if state is changed
+  # Listens to the topic and outputs the output registered after task completes 
+  # the execution
+  handlers:
+      - name: output handler
+        debug:
+           msg: "{{ output }}"
+        listen: 
+         - update_handler
