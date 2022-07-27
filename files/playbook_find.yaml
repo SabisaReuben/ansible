@@ -2,16 +2,22 @@
 - name: Finding specific files
   remote_user: root
   become: true
+  hosts: redhat
   become_user: root
   become_method: su
   ignore_unreachable: true
   ignore_errors: true
   tasks:
-   - name: Recursively find /tmp files older than 2 days
-     find:
-       paths: /tmp
-       age: 2d
-       recurse: yes
+    - name: Recursively find /tmp files older than 2 days
+      find:
+        paths: /tmp
+        age: 2d
+        recurse: yes
+      register: output
+    - name: showing the output
+      debug:
+        msg: "{{ output }}"
+
 
     - name: Recursively find /tmp files older than 4 weeks and equal or greater than 1 megabyte
       find:

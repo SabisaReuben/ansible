@@ -1,0 +1,18 @@
+---
+- name: mounting a flash disk
+  hosts: redhat
+  ignore_errors: true
+  ignore_unreachable: true
+  become: true
+  become_user: root
+  become_method: su
+  remote_user: root
+  tasks:
+       - name: Mounting a flash to '/tmp/flash'
+         ansible.posix.mount:
+           src: /dev/sdb
+           path: /tmp/flash
+           state: mounted
+           fstype: ext4
+
+

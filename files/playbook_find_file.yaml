@@ -7,12 +7,21 @@
   become_user: root
   become_method: su
   hosts: redhat 
+  vars:
+     file_name: leaning_vim
   tasks:
-     - name: finding a file 'learning_vim'
+     - name: finding a file '*.sql'
        find:
-          path: /home/reuben/leahh
-          size: -1m
+          path: /home/
           recurse: true 
+          patterns: kllbnkbvjvjjvvjvjvjsql
+       register: output
+       notify: file_found_handler
+  handlers:
+     - name: The file finder
+       debug:
+          msg: " {{ output }}"
+       listen: file_found_handler
 
 
 
