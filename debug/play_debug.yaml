@@ -1,5 +1,16 @@
 
 ---
+# ansible debug module enables you to log infomation
+# basic attributes -> var and msg
+# The var and msg are mutually exclusive
+#
+# Task one in the script display all the facts collected from the nodes
+# in the redhat group.
+#
+# Task 2 and 3 displays information while working with the file module
+#
+#
+
 - name: Working with ansible handlers
   hosts: redhat
   ignore_errors: true
@@ -8,7 +19,25 @@
   become_user: root
   become_method: su
   remote_user: root
+  vars:
+     file_dir: / 
   tasks:
       - name: Getting all fact from the hosts
         debug:
            var: ansible_facts
+
+      # fing a file in all the " {{ file_dir }}" 
+      - name: "Finding a file {{ file_dir" 
+        find:
+           path: " {{ file_dir }}"
+           patterns: '*.sql'
+           recurse: true
+           age: 2w
+        register: output
+
+     # using the ansible.builtin.debug module to display the output registered in previous task
+     - name: Outputing the file search output
+       debug:
+          msg: " {{ output }}"
+
+      
